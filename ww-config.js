@@ -165,7 +165,8 @@ export default {
                 tooltip: 'Whether users can click a step indicator to navigate.\n\nBoolean (either true or false)',
             },
             propertyHelp: {
-                tooltip: 'Allow users to jump directly to a step by clicking its indicator (interactive steps).',
+                tooltip:
+                    'Allow users to jump to a step by clicking its indicator. Limited to the current, previous or already completed steps — never skips ahead past unvalidated steps.',
             },
             /* wwEditor:end */
         },
@@ -183,11 +184,12 @@ export default {
         showNavButtons: {
             label: { en: 'Show navigation buttons' },
             type: 'OnOff',
-            defaultValue: true,
+            defaultValue: false,
             section: 'settings',
             /* wwEditor:start */
             propertyHelp: {
-                tooltip: 'Show previous/next navigation buttons below the step content.',
+                tooltip:
+                    'Show built-in previous/next buttons below the step content. Hidden by default: when each step contains a form, drive the navigation from the form buttons and its submit workflow instead.',
             },
             /* wwEditor:end */
         },

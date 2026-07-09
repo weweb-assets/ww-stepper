@@ -15,16 +15,16 @@
                     >
                         <div
                             class="ww-stepper__indicator"
-                            :class="{ clickable: isStepClickable }"
-                            :role="isStepClickable ? 'button' : undefined"
-                            :tabindex="isStepClickable ? 0 : undefined"
+                            :class="{ clickable: canClickStep(index - 1) }"
+                            :role="canClickStep(index - 1) ? 'button' : undefined"
+                            :tabindex="canClickStep(index - 1) ? 0 : undefined"
                             @click="onStepClick(index - 1)"
                             @keydown.enter.prevent="onStepClick(index - 1)"
                             @keydown.space.prevent="onStepClick(index - 1)"
                         >
                             <template v-if="stepStyle !== 'bullets'">
                                 <svg
-                                    v-if="stepStates[index - 1] === 'completed' && !content.completedIcon"
+                                    v-if="stepStates[index - 1] === 'completed' && !completedIconHTML"
                                     class="ww-stepper__check"
                                     viewBox="0 0 24 24"
                                     aria-hidden="true"
@@ -39,7 +39,7 @@
                                     />
                                 </svg>
                                 <span
-                                    v-else-if="stepStates[index - 1] === 'completed' && completedIconHTML"
+                                    v-else-if="stepStates[index - 1] === 'completed'"
                                     class="ww-stepper__check"
                                     aria-hidden="true"
                                     v-html="completedIconHTML"
@@ -55,7 +55,11 @@
                             {{ stepLabels[index - 1] || `Step ${index}` }}
                         </div>
                     </div>
-                    <div v-if="index < nbOfSteps" class="ww-stepper__connector" :class="stepStates[index - 1]"></div>
+                    <div
+                        v-if="index < nbOfSteps"
+                        class="ww-stepper__connector"
+                        :class="index <= activeStepIndex ? 'completed' : 'inactive'"
+                    ></div>
                 </template>
             </div>
 
@@ -125,7 +129,10 @@ export default {
         const stepLabels = computed(() => props.content.stepLabels || []);
         const isFirstStep = computed(() => activeStepIndex.value <= 0);
         const isLastStep = computed(() => activeStepIndex.value >= nbOfSteps.value - 1);
-        const isStepClickable = computed(() => isEditing.value || !!props.content.clickableSteps);
+        const canClickStep = index =>
+            isEditing.value ||
+            (!!props.content.clickableSteps &&
+                (index <= activeStepIndex.value || completedSteps.value.includes(index)));
 
         const stepStates = computed(() =>
             Array.from({ length: nbOfSteps.value }, (_, index) => {
@@ -212,7 +219,7 @@ export default {
                 return;
             }
             /* wwEditor:end */
-            if (!props.content.clickableSteps) return;
+            if (!canClickStep(index)) return;
             goToStep(index);
         };
 
@@ -362,7 +369,7 @@ export default {
             cssVariables,
             isFirstStep,
             isLastStep,
-            isStepClickable,
+            canClickStep,
             completedIconHTML,
             onStepClick,
             onNextClick,

@@ -5,8 +5,8 @@
         "keywords": ["stepper", "wizard", "multi-step", "steps", "progress", "form", "onboarding", "checkout"],
         "features": [
             "Numbered or bullet step indicators, horizontal or vertical",
-            "Droppable content area per step (any WeWeb elements)",
-            "Previous/Next navigation buttons and optional click-to-jump steps",
+            "Droppable content area per step (any WeWeb elements) — typically one form per step, whose submit drives the navigation",
+            "Optional built-in Previous/Next buttons (hidden by default) and optional click-to-jump steps",
             "Completion tracking with per-step and finish events",
             "Workflow actions to drive the active step programmatically"
         ],
@@ -35,7 +35,7 @@
         },
         {
             "name": "clickableSteps",
-            "description": "Allow users to jump directly to a step by clicking its indicator (interactive steps).",
+            "description": "Allow users to jump to a step by clicking its indicator. Limited to the current, previous or already completed steps — clicking never skips ahead past unvalidated steps.",
             "type": "boolean",
             "defaultValue": false
         },
@@ -47,9 +47,9 @@
         },
         {
             "name": "showNavButtons",
-            "description": "Show previous/next navigation buttons below the step content.",
+            "description": "Show the built-in previous/next navigation buttons below the step content. Hidden by default — prefer driving the navigation from each step's form (see specifications) and only enable these buttons for stepper content that has no form.",
             "type": "boolean",
-            "defaultValue": true
+            "defaultValue": false
         },
         {
             "name": "stepStyle",
@@ -178,7 +178,7 @@
     "slots": [
         {
             "name": "stepsContent",
-            "description": "One droppable content area per step; drop the fields/content for that step here. Only the active step's content is visible at runtime.",
+            "description": "One droppable content area per step. For form wizards, put a ww-form-container with the step's fields and its own submit/previous buttons in each area, and wire the submit workflow to the stepper's navigation actions. Only the active step's content is visible at runtime.",
             "type": "array"
         }
     ],
@@ -210,7 +210,9 @@
     ],
     "specifications": [
         "Each step is a droppable area (wwLayout on stepsContent). At runtime only the active step's content is shown; the others are hidden but stay mounted.",
-        "Navigation buttons are two internal ww-button elements (previous/next); on the last step the next button emits 'finish' instead of advancing.",
+        "RECOMMENDED PATTERN — one ww-form-container per step: put each step's fields inside a ww-form-container with its own submit button, and call the stepper's 'Next step' action (or 'Trigger finish' on the last step) from the form's on-submit workflow. Native form validation then gates the progression: users can only advance when the step's required fields are valid. Add a secondary 'Previous' button in the form calling 'Previous step' when needed.",
+        "The built-in navigation bar (showNavButtons) is optional and hidden by default; with the form-per-step pattern it would bypass form validation. Only enable it for steppers whose steps contain no form.",
+        "When enabled, the navigation buttons are two internal ww-button elements (previous/next); on the last step the next button emits 'finish' instead of advancing.",
         "completedIcon uses the WeWeb SystemIcon set and falls back to an inline checkmark when empty; bullets style hides numbers and icons.",
         "numberFontSize applies only to the Numbers style; labelTypography applies only when showLabels is on.",
         "Exposed variables (activeStepIndex, completedSteps, isFirstStep, isLastStep) are read-only outputs; drive the step via the goToStep/goToNextStep/goToPreviousStep/triggerFinish actions.",
@@ -218,8 +220,8 @@
     ],
     "examples": [
         {
-            "description": "3-step onboarding with click-to-jump and a checkmark on completed steps",
-            "example": "{\"orientation\":\"horizontal\",\"stepStyle\":\"numbers\",\"clickableSteps\":true,\"showLabels\":true,\"showNavButtons\":true,\"completedIcon\":\"check\"}"
+            "description": "3-step onboarding form wizard: one ww-form-container per step whose submit button calls the 'Next step' action ('Trigger finish' on the last step), so validation gates the progression; built-in nav buttons stay hidden",
+            "example": "{\"orientation\":\"horizontal\",\"stepStyle\":\"numbers\",\"clickableSteps\":true,\"showLabels\":true,\"showNavButtons\":false,\"completedIcon\":\"check\"}"
         }
     ],
     "dependencies": []
