@@ -1,0 +1,211 @@
+{
+    "metadata": {
+        "name": "ww-stepper",
+        "description": "A multi-step wizard that wraps form content into sequential steps with a clickable step indicator, previous/next navigation and completion tracking.",
+        "keywords": ["stepper", "wizard", "multi-step", "steps", "progress", "form", "onboarding", "checkout"],
+        "features": [
+            "Numbered or bullet step indicators, horizontal or vertical",
+            "Droppable content area per step (any WeWeb elements)",
+            "Previous/Next navigation buttons and optional click-to-jump steps",
+            "Completion tracking with per-step and finish events",
+            "Workflow actions to drive the active step programmatically"
+        ],
+        "inherit": []
+    },
+    "properties": [
+        {
+            "name": "stepsContent",
+            "description": "The steps of the stepper. Each entry is a droppable content area shown only when its step is active. Bindable to a collection/array to render one step per item.",
+            "type": "array",
+            "defaultValue": []
+        },
+        {
+            "name": "orientation",
+            "description": "Layout direction of the step indicators.",
+            "type": "string",
+            "defaultValue": "horizontal",
+            "options": ["horizontal", "vertical"]
+        },
+        {
+            "name": "indicatorsPosition",
+            "description": "Side of the step indicators relative to the step content (vertical orientation only).",
+            "type": "string",
+            "defaultValue": "left",
+            "options": ["left", "right"]
+        },
+        {
+            "name": "clickableSteps",
+            "description": "Allow users to jump directly to a step by clicking its indicator (interactive steps).",
+            "type": "boolean",
+            "defaultValue": false
+        },
+        {
+            "name": "showLabels",
+            "description": "Show a text label next to each step indicator.",
+            "type": "boolean",
+            "defaultValue": true
+        },
+        {
+            "name": "showNavButtons",
+            "description": "Show previous/next navigation buttons below the step content.",
+            "type": "boolean",
+            "defaultValue": true
+        },
+        {
+            "name": "stepStyle",
+            "description": "Visual style of the step indicators: numbered circles or small dots.",
+            "type": "string",
+            "defaultValue": "numbers",
+            "options": ["numbers", "bullets"]
+        },
+        {
+            "name": "currentColor",
+            "description": "Background color of the current step indicator.",
+            "type": "string",
+            "defaultValue": "#2563eb"
+        },
+        {
+            "name": "activeColor",
+            "description": "Background color of completed step indicators and their connectors.",
+            "type": "string",
+            "defaultValue": "#2563eb"
+        },
+        {
+            "name": "inactiveColor",
+            "description": "Background color of steps not reached yet.",
+            "type": "string",
+            "defaultValue": "#d1d5db"
+        },
+        {
+            "name": "iconColor",
+            "description": "Color of the number or icon inside a step indicator.",
+            "type": "string",
+            "defaultValue": "#ffffff"
+        },
+        {
+            "name": "completedIcon",
+            "description": "System icon shown inside a completed step; falls back to a checkmark when empty.",
+            "type": "string",
+            "defaultValue": ""
+        },
+        {
+            "name": "numberFontSize",
+            "description": "Font size of the step number (Numbers style only).",
+            "type": "string",
+            "defaultValue": "14px"
+        },
+        {
+            "name": "labelTypography",
+            "description": "Typography of the step labels as a CSS font shorthand (only when labels are shown).",
+            "type": "string",
+            "defaultValue": ""
+        }
+    ],
+    "states": [],
+    "events": [
+        {
+            "name": "stepChange",
+            "description": "Fires whenever the active step changes (navigation or a workflow action).",
+            "payload": { "stepIndex": "number — the new active step index (zero-based)" }
+        },
+        {
+            "name": "stepComplete",
+            "description": "Fires when a step is validated and marked completed while moving forward.",
+            "payload": { "stepIndex": "number — the index of the step that was completed" }
+        },
+        {
+            "name": "finish",
+            "description": "Fires when the last step is completed or the Trigger finish action is called.",
+            "payload": { "totalSteps": "number — the total number of steps" }
+        }
+    ],
+    "localContext": [
+        {
+            "name": "stepper.activeStepIndex",
+            "description": "The zero-based index of the currently active step.",
+            "type": "number"
+        },
+        { "name": "stepper.nbOfSteps", "description": "Total number of steps.", "type": "number" },
+        { "name": "stepper.isFirstStep", "description": "Whether the current step is the first.", "type": "boolean" },
+        { "name": "stepper.isLastStep", "description": "Whether the current step is the last.", "type": "boolean" },
+        {
+            "name": "stepper.completedSteps",
+            "description": "Array of indexes of steps marked completed.",
+            "type": "array"
+        }
+    ],
+    "actions": [
+        {
+            "label": "Go to step",
+            "actionName": "goToStep",
+            "description": "Move the stepper to a specific step index (zero-based).",
+            "args": [{ "name": "index", "type": "number", "description": "Target step index." }]
+        },
+        {
+            "label": "Next step",
+            "actionName": "goToNextStep",
+            "description": "Move to the next step and mark the current step completed.",
+            "args": []
+        },
+        {
+            "label": "Previous step",
+            "actionName": "goToPreviousStep",
+            "description": "Move back to the previous step.",
+            "args": []
+        },
+        {
+            "label": "Trigger finish",
+            "actionName": "triggerFinish",
+            "description": "Mark the current step completed and emit the finish event.",
+            "args": []
+        }
+    ],
+    "slots": [
+        {
+            "name": "stepsContent",
+            "description": "One droppable content area per step; drop the fields/content for that step here. Only the active step's content is visible at runtime.",
+            "type": "array"
+        }
+    ],
+    "variables": [
+        {
+            "name": "activeStepIndex",
+            "description": "Zero-based index of the active step.",
+            "type": "number",
+            "readonly": true
+        },
+        {
+            "name": "completedSteps",
+            "description": "Array of completed step indexes.",
+            "type": "array",
+            "readonly": true
+        },
+        {
+            "name": "isFirstStep",
+            "description": "True when the active step is the first.",
+            "type": "boolean",
+            "readonly": true
+        },
+        {
+            "name": "isLastStep",
+            "description": "True when the active step is the last.",
+            "type": "boolean",
+            "readonly": true
+        }
+    ],
+    "specifications": [
+        "Each step is a droppable area (wwLayout on stepsContent). At runtime only the active step's content is shown; the others are hidden but stay mounted.",
+        "Navigation buttons are two internal ww-button elements (previous/next); on the last step the next button emits 'finish' instead of advancing.",
+        "completedIcon uses the WeWeb SystemIcon set and falls back to an inline checkmark when empty; bullets style hides numbers and icons.",
+        "numberFontSize applies only to the Numbers style; labelTypography applies only when showLabels is on.",
+        "Exposed variables (activeStepIndex, completedSteps, isFirstStep, isLastStep) are read-only outputs; drive the step via the goToStep/goToNextStep/goToPreviousStep/triggerFinish actions.",
+        "Root is fluid (no fixed width/height); the indicator row + content stack vertically (horizontal orientation) or sit side by side (vertical orientation, indicatorsPosition picks the left/right side)."
+    ],
+    "examples": [
+        {
+            "description": "3-step onboarding with click-to-jump and a checkmark on completed steps",
+            "example": "{\"orientation\":\"horizontal\",\"stepStyle\":\"numbers\",\"clickableSteps\":true,\"showLabels\":true,\"showNavButtons\":true,\"completedIcon\":\"check\"}"
+        }
+    ],
+    "dependencies": []
+}
