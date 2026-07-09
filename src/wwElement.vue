@@ -445,12 +445,20 @@ export default {
         flex-direction: row-reverse;
     }
 
+    --stepper-indicator-size: 32px;
+    --stepper-connector-size: 2px;
+    --stepper-connector-offset: calc(var(--stepper-indicator-size) / 2 - var(--stepper-connector-size) / 2);
+
+    &.style-bullets {
+        --stepper-indicator-size: 14px;
+    }
+
     &__indicator {
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 32px;
-        height: 32px;
+        width: var(--stepper-indicator-size);
+        height: var(--stepper-indicator-size);
         border-radius: 50%;
         background: var(--stepper-inactive, #d1d5db);
         color: var(--stepper-icon, #ffffff);
@@ -468,11 +476,6 @@ export default {
     }
     &__step.completed &__indicator {
         background: var(--stepper-completed, #2563eb);
-    }
-
-    &.style-bullets &__indicator {
-        width: 14px;
-        height: 14px;
     }
 
     &__check {
@@ -514,32 +517,23 @@ export default {
 
     &__connector {
         flex: 1 1 auto;
-        height: 2px;
+        height: var(--stepper-connector-size);
         min-width: 24px;
-        margin: 15px 8px 0;
+        margin: var(--stepper-connector-offset) 8px 0;
         background: var(--stepper-inactive, #d1d5db);
         transition: background-color 0.2s ease;
     }
-    &.style-bullets &__connector {
-        margin-top: 6px;
-    }
     &.vertical &__connector {
-        width: 2px;
+        width: var(--stepper-connector-size);
         height: auto;
         min-height: 24px;
         min-width: 0;
-        margin: 8px 0 8px 15px;
+        margin: 8px 0 8px var(--stepper-connector-offset);
         align-self: stretch;
         flex: 0 0 24px;
     }
     &.vertical.indicators-right &__connector {
-        margin: 8px 15px 8px auto;
-    }
-    &.vertical.style-bullets &__connector {
-        margin: 8px 0 8px 6px;
-    }
-    &.vertical.style-bullets.indicators-right &__connector {
-        margin: 8px 6px 8px auto;
+        margin: 8px var(--stepper-connector-offset) 8px auto;
     }
     &__connector.completed {
         background: var(--stepper-completed, #2563eb);
