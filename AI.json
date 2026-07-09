@@ -121,17 +121,32 @@
     ],
     "localContext": [
         {
-            "name": "stepper.activeStepIndex",
-            "description": "The zero-based index of the currently active step.",
-            "type": "number"
-        },
-        { "name": "stepper.nbOfSteps", "description": "Total number of steps.", "type": "number" },
-        { "name": "stepper.isFirstStep", "description": "Whether the current step is the first.", "type": "boolean" },
-        { "name": "stepper.isLastStep", "description": "Whether the current step is the last.", "type": "boolean" },
-        {
-            "name": "stepper.completedSteps",
-            "description": "Array of indexes of steps marked completed.",
-            "type": "array"
+            "path": "stepper",
+            "type": "object",
+            "description": "Exposed to every element dropped inside a step. Holds the live stepper state plus navigation functions.",
+            "content": {
+                "activeStepIndex": {
+                    "type": "number",
+                    "description": "Zero-based index of the currently active step."
+                },
+                "nbOfSteps": { "type": "number", "description": "Total number of steps." },
+                "isFirstStep": { "type": "boolean", "description": "Whether the active step is the first." },
+                "isLastStep": { "type": "boolean", "description": "Whether the active step is the last." },
+                "completedSteps": { "type": "array", "description": "Indexes of the steps marked completed." },
+                "goToStep": {
+                    "type": "function",
+                    "description": "goToStep(index) — jump to a specific step (zero-based)."
+                },
+                "goToNextStep": {
+                    "type": "function",
+                    "description": "Mark the current step completed and move forward."
+                },
+                "goToPreviousStep": { "type": "function", "description": "Move back one step." },
+                "triggerFinish": {
+                    "type": "function",
+                    "description": "Mark the current step completed and fire the finish event."
+                }
+            }
         }
     ],
     "actions": [
